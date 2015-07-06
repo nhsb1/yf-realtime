@@ -1,2 +1,2 @@
 # yf-realtime
-#get's realtime ticker info
+#gets realtime ticker info
