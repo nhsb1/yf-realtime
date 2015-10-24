@@ -1,6 +1,6 @@
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from yahoo_finance import Share
-import urllib2
+import urllib3
 from argparse import ArgumentParser
 
 baseurl = 'http://finance.yahoo.com/q?s='
@@ -25,6 +25,9 @@ def getOpen(self):
 def getYearHigh(self):
 	return self.get_year_high()
 
+def getYearLow(self):
+    return self.get_year_low()
+
 def getVolume(self):
 	return float(self.get_volume())
 
@@ -32,8 +35,9 @@ def getAvgDailyVolume(self):
 	return float(self.get_avg_daily_volume())
 
 def scraper(self):
-	page = urllib2.urlopen(self)
-	soup = BeautifulSoup(page.read())
+	http = urllib3.PoolManager()
+	page = http.request('GET', self)
+	soup = BeautifulSoup(page.read(), "lxml")
 	target = soup.find("span", {"class": "time_rtq_ticker"}).span.contents
 	return target[0]
 
@@ -59,6 +63,22 @@ def offHigh(self):
 	percentOffHigh = str(round((oh1 / float(realtime))*100, 2))+ "%"
 	return percentOffHigh
 
+def offlow(self):
+	#ol1 =  (float(realtime)- float(myyearlow))
+	#percentofflow = str(round((ol1 / float(realtime))*100,2))+ "%"
+	#return percentofflow
+	olrealtime = float(realtime)
+	olmyyearlow = float(myyearlow)
+	ol1 = olrealtime- olmyyearlow
+	ol2 = (ol1 / olmyyearlow)*100
+	ol2 = str(round(ol2,2)) + "%"
+	return ol2
+
+
+def getYearLow(self):
+    return self.get_year_low()
+
+
 def ofAverageVolume(self):
 	myAverageVolume = getAvgDailyVolume(self)
 	myCurrentVolume = getVolume(self)
@@ -69,7 +89,7 @@ def ofAverageVolume(self):
 		ofAverageVolume = round((1-(myAverageVolume - myCurrentVolume)/(myAverageVolume))*100, 2)
 		return ofAverageVolume
 
-def realtimePrice(a, b, c, d, e, f, g, h, i, j):
+def realtimePrice(a, b, c, d, e, f, g, h, i, j, k, l):
 	print "ticker: %s" % ticker
 	print "Realtime: %s" % realtime
 	print "Delayed Price: %s" % myPrice
@@ -80,6 +100,8 @@ def realtimePrice(a, b, c, d, e, f, g, h, i, j):
 	print "Percent of Average: %s" % myOfAverageVolume + "%"
 	print "52-week High: %s" %myYearHigh
 	print "Percent off high: %s" %myOffHigh
+	print "52-week low: %s" %myyearlow
+	print "Percent off low: %s" %myofflow
 
 
 	#		print ticker.strip('\n') + ", " + str(round(mypercentchange, 2))+'%' + ", " + str(round(myofAverageVolume, 2))+'%'
@@ -102,8 +124,11 @@ if args.ticker:
 	myYearHigh = getYearHigh(mystock)
 	myPercentChange = percentChange(mystock)
 	realtime = scraper(url)
+	myyearlow = getYearLow(mystock)
 	myOffHigh = offHigh(mystock)
-	realtimePrice(ticker, realtime, myPrice, myDayChange, myPercentChange, myVolume, myAverageDailyVolume, myOfAverageVolume, myYearHigh, myOffHigh)
+	myofflow = offlow(mystock)
+
+	realtimePrice(ticker, realtime, myPrice, myDayChange, myPercentChange, myVolume, myAverageDailyVolume, myOfAverageVolume, myYearHigh, myOffHigh, myyearlow, myofflow)
 	
 	#print myPrice, myOpen
 
