@@ -15,7 +15,7 @@ Install
 Usage
 -----
 
-    rtq -t tickersymbol
+    rtqinfo -t tickersymbol
 
 See Also
 --------
