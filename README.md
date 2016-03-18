@@ -21,6 +21,7 @@ Prerequisites
 --------
 On Windows: 
 [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/en-us/download/details.aspx?id=44266)
+
 [easy_install lxml](http://lxml.de/2.2/installation.html)
 
 See Also
