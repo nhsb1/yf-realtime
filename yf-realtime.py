@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from yahoo_finance import Share
-import urllib3
+import urllib2
 from argparse import ArgumentParser
 
 baseurl = 'http://finance.yahoo.com/q?s='
@@ -35,8 +35,7 @@ def getAvgDailyVolume(self):
 	return float(self.get_avg_daily_volume())
 
 def scraper(self):
-	http = urllib3.PoolManager()
-	page = http.request('GET', self)
+	page = urllib2.urlopen(self)
 	soup = BeautifulSoup(page.read(), "lxml")
 	target = soup.find("span", {"class": "time_rtq_ticker"}).span.contents
 	return target[0]
