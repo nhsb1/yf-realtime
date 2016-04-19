@@ -1,6 +1,6 @@
 # rqt (yf-realtime)
 
-![rtscreenshot1](https://cloud.githubusercontent.com/assets/12847315/10928459/79008fda-8276-11e5-9f0a-5fafb4dc45d9.jpg)
+![rtscreenshot1](https://github.com/nhsb1/yf-realtime/blob/master/rtq-c.png)
 
 Reports real-time price and related information for a given ticker symbol.  Designed as a convenient quick look tool that helps you understand the context of where a stock is trading right now, without the overhead of a trading platform. 
 
