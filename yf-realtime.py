@@ -6,6 +6,13 @@ from argparse import ArgumentParser
 baseurl = 'http://finance.yahoo.com/q?s='
 endurl = '&ql=1'
 
+<<<<<<< HEAD
+=======
+#pre-reqs:
+#easy_install lxml
+# error: Microsoft Visual C++ 9.0 is required (Unable to find vcvarsall.bat)... get http://aka.ms/vcpython27
+
+>>>>>>> 9cc2ba2a5f78d3c31aeb089685a80e96469560e0
 def startup(self):
 	print "Runing against..." + url
 
