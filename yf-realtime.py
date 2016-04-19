@@ -2,7 +2,13 @@ from bs4 import BeautifulSoup
 from yahoo_finance import Share
 import urllib2
 import time
-from argparse import ArgumentParser
+from argparse import ArgumentParser 
+from colorama import init, Fore, Back, Style
+
+
+averagevolumeflag = 100 # the percentage volume to flag in output with 
+#init()
+init(autoreset=True) #For colorama it autoresets color everytime it's called
 
 baseurl = 'http://finance.yahoo.com/q?s='
 endurl = '&ql=1'
@@ -53,7 +59,7 @@ def getDayChange(self):
 def percentChange(self):
 	if (myDayChange is not None) and (myOpen is not None):
 		tickerPercentChange = (myDayChange/myOpen)*100
-		tickerPercentChange = str(round(tickerPercentChange, 2))
+		tickerPercentChange = round(tickerPercentChange, 2)
 		return tickerPercentChange
 	else:
 		return 0
@@ -64,9 +70,6 @@ def offHigh(self):
 	return percentOffHigh
 
 def offlow(self):
-	#ol1 =  (float(realtime)- float(myyearlow))
-	#percentofflow = str(round((ol1 / float(realtime))*100,2))+ "%"
-	#return percentofflow
 	olrealtime = float(realtime)
 	olmyyearlow = float(myyearlow)
 	ol1 = olrealtime- olmyyearlow
@@ -90,19 +93,41 @@ def ofAverageVolume(self):
 		return ofAverageVolume
 
 def realtimePrice(a, b, c, d, e, f, g, h, i, j, k, l):
+
 	print "Timestamp: %s" % (time.strftime('%Y-%m-%d %H:%M:%S'))
 	print "ticker: %s" % ticker
-	print "Realtime: %s" % realtime
-	print "Delayed Price: %s" % myPrice
+	if realtime >= myPrice:												#Visualize in color the direction of realtime price relative delayed price - right now, is it going up or down?
+		print "Realtime: %s" % (Style.BRIGHT + Fore.GREEN + realtime)
+	else:
+		print "Realtime: %s" % (Style.BRIGHT + Fore.RED + realtime)
+
+ 	print "Delayed Price: %s" % myPrice
+
 	print "Day Change: %s" % myDayChange
-	print "Percent Change: %s" %myPercentChange + "%"
+
+	if myPercentChange >0:												#Visualize in color the overall direction
+		strmypercentchange= str(myPercentChange) 						#convert it to a string; fixes float to string concatenation
+		print "Percent Change: %s" % (Style.BRIGHT + Fore.GREEN + strmypercentchange + "%")
+	else:
+		strmypercentchange= str(myPercentChange)
+		print "Percent Change: %s" % (Style.BRIGHT + Fore.RED + strmypercentchange + "%")
+	
 	print "Volume: %s" % myVolume
 	print "Average Volume: %s" % myAverageDailyVolume
-	print "Percent of Average: %s" % myOfAverageVolume + "%"
+	
+	if myOfAverageVolume > averagevolumeflag:							#Flag 
+		strmyofaveragevolume = str(myOfAverageVolume) 					#convert it to a string; fixes float to string concatenation
+		print "Percent of Average: %s" % (Style.BRIGHT + Fore.YELLOW + strmyofaveragevolume + "%") 
+	else:
+		print "Percent of Average: %s" % myOfAverageVolume + "%"
+
 	print "52-week High: %s" %myYearHigh
 	print "Percent off high: %s" %myOffHigh
 	print "52-week low: %s" %myyearlow
 	print "Percent off low: %s" %myofflow
+
+	print (Style.RESET_ALL)
+
 
 
 	#		print ticker.strip('\n') + ", " + str(round(mypercentchange, 2))+'%' + ", " + str(round(myofAverageVolume, 2))+'%'
