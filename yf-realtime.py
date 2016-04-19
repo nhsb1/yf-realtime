@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from yahoo_finance import Share
 import urllib2
+import time
 from argparse import ArgumentParser
 
 baseurl = 'http://finance.yahoo.com/q?s='
@@ -89,6 +90,7 @@ def ofAverageVolume(self):
 		return ofAverageVolume
 
 def realtimePrice(a, b, c, d, e, f, g, h, i, j, k, l):
+	print "Timestamp: %s" % (time.strftime('%Y-%m-%d %H:%M:%S'))
 	print "ticker: %s" % ticker
 	print "Realtime: %s" % realtime
 	print "Delayed Price: %s" % myPrice
