@@ -69,7 +69,7 @@ class Reporting(object):
 		else:
 			print "Percent of Average: %s" % myOfAverageVolume + "%"
 
-	def print_avgvoulme_mono(self):
+	def print_avgvolume_mono(self):
 		if myOfAverageVolume > averagevolumeflag:							#Flag 
 			strmyofaveragevolume = str(myOfAverageVolume) 					#convert it to a string; fixes float to string concatenation
 			print "Percent of Average: %s" % (strmyofaveragevolume + "%") 
@@ -197,23 +197,28 @@ if args.ticker:
 	myofflow = offlow(mystock)
 
 	#Begin Report
-	newreport = Reporting(ticker)
-	newreport.print_timestamp()
 	if args.monochrome:
+		newreport = Reporting(ticker)
+		newreport.print_timestamp()
 		newreport.print_realtimeprice_mono()
-	else:
-		newreport.print_realtimeprice()
-	newreport.print_delayprice()
-	if args.monochrome:
+		newreport.print_delayprice()
 		newreport.print_percentchange_mono()
+		newreport.print_dailyvolume()
+		newreport.print_avgvolume_mono()
+		newreport.print_52weekhigh()
+		newreport.print_52week_offhigh()
+		newreport.print_52weeklow()
+		newreport.print_52week_offlow()
 	else:
+		newreport = Reporting(ticker)
+		newreport.print_timestamp()
+		newreport.print_realtimeprice()
+		newreport.print_delayprice()
 		newreport.print_percentchange()
-	newreport.print_dailyvolume()
-	if args.monochrome:
-		newreport.print_avgvoulme_mono()
-	else:
+		newreport.print_dailyvolume()
 		newreport.print_avgvoulme()
-	newreport.print_52weekhigh()
-	newreport.print_52week_offhigh()
-	newreport.print_52weeklow()
-	newreport.print_52week_offlow()
+		newreport.print_52weekhigh()
+		newreport.print_52week_offhigh()
+		newreport.print_52weeklow()
+		newreport.print_52week_offlow()
+
