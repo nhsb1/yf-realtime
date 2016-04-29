@@ -27,6 +27,14 @@ class Reporting(object):
 		else:
 			print "Realtime: %s" % (Style.BRIGHT + Fore.RED + realtime)
 
+	def print_realtimeprice_mono(self):
+		print "ticker: %s" % ticker
+		if realtime >= myPrice:												#Visualize in color the direction of realtime price relative delayed price - right now, is it going up or down?
+			print "Realtime: %s" % (realtime)
+		else:
+			print "Realtime: %s" % (realtime)
+
+ 
 	def print_delayprice(self):
 	 	print "Delayed Price: %s" % myPrice
 		print "Day Change: %s" % myDayChange
@@ -34,14 +42,21 @@ class Reporting(object):
 	def print_percentchange(self):
 		if myPercentChange >0:												#Visualize in color the overall direction
 			strmypercentchange= str(myPercentChange) 						#convert it to a string; fixes float to string concatenation
-			if args.monochrome:
-				print "#Visualize in color the direction of realtime price relative delayed price - right now, is it going up or down"
-				print "Percent Change: %s" % (strmypercentchange + "%")
-			else:
-				print "Percent Change: %s" % (Style.BRIGHT + Fore.GREEN + strmypercentchange + "%")
+			print "Percent Change: %s" % (Style.BRIGHT + Fore.GREEN + strmypercentchange + "%")
 		else:
 			strmypercentchange= str(myPercentChange)
 			print "Percent Change: %s" % (Style.BRIGHT + Fore.RED + strmypercentchange + "%")
+
+	def print_percentchange_mono(self):
+			if myPercentChange >0:												#Visualize in color the overall direction
+				strmypercentchange= str(myPercentChange) 						#convert it to a string; fixes float to string concatenation
+				if args.monochrome:
+					print "Percent Change: %s" % (strmypercentchange + "%")
+			else:
+				strmypercentchange= str(myPercentChange)
+				if args.monochrome:
+					print "Percent Change: %s" % (strmypercentchange + "%")
+
 
 	def print_dailyvolume(self):
 		print "Volume: %s" % myVolume
@@ -51,6 +66,13 @@ class Reporting(object):
 		if myOfAverageVolume > averagevolumeflag:							#Flag 
 			strmyofaveragevolume = str(myOfAverageVolume) 					#convert it to a string; fixes float to string concatenation
 			print "Percent of Average: %s" % (Style.BRIGHT + Fore.YELLOW + strmyofaveragevolume + "%") 
+		else:
+			print "Percent of Average: %s" % myOfAverageVolume + "%"
+
+	def print_avgvoulme_mono(self):
+		if myOfAverageVolume > averagevolumeflag:							#Flag 
+			strmyofaveragevolume = str(myOfAverageVolume) 					#convert it to a string; fixes float to string concatenation
+			print "Percent of Average: %s" % (strmyofaveragevolume + "%") 
 		else:
 			print "Percent of Average: %s" % myOfAverageVolume + "%"
 
@@ -149,7 +171,7 @@ def ofAverageVolume(self):
 
 parser = ArgumentParser(description = 'Get Realtime ticker from Yahoo-Finance')
 parser.add_argument("-t", "--ticker", required=True, dest="ticker", help="ticker for lookup", metavar="FILE")
-parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrom", default=False, action="store_true")
+parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrome", default=False, action="store_true")
 
 
 #arser.add_argument("-v", "--volume", action="store_true", dest="volumeFlag", default=False, help="high volume notification")
@@ -177,11 +199,20 @@ if args.ticker:
 	#Begin Report
 	newreport = Reporting(ticker)
 	newreport.print_timestamp()
-	newreport.print_realtimeprice()
+	if args.monochrome:
+		newreport.print_realtimeprice_mono()
+	else:
+		newreport.print_realtimeprice()
 	newreport.print_delayprice()
-	newreport.print_percentchange()
+	if args.monochrome:
+		newreport.print_percentchange_mono()
+	else:
+		newreport.print_percentchange()
 	newreport.print_dailyvolume()
-	newreport.print_avgvoulme()
+	if args.monochrome:
+		newreport.print_avgvoulme_mono()
+	else:
+		newreport.print_avgvoulme()
 	newreport.print_52weekhigh()
 	newreport.print_52week_offhigh()
 	newreport.print_52weeklow()
