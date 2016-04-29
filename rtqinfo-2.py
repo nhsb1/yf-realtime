@@ -34,7 +34,11 @@ class Reporting(object):
 	def print_percentchange(self):
 		if myPercentChange >0:												#Visualize in color the overall direction
 			strmypercentchange= str(myPercentChange) 						#convert it to a string; fixes float to string concatenation
-			print "Percent Change: %s" % (Style.BRIGHT + Fore.GREEN + strmypercentchange + "%")
+			if args.monochrome:
+				print "#Visualize in color the direction of realtime price relative delayed price - right now, is it going up or down"
+				print "Percent Change: %s" % (strmypercentchange + "%")
+			else:
+				print "Percent Change: %s" % (Style.BRIGHT + Fore.GREEN + strmypercentchange + "%")
 		else:
 			strmypercentchange= str(myPercentChange)
 			print "Percent Change: %s" % (Style.BRIGHT + Fore.RED + strmypercentchange + "%")
@@ -144,7 +148,12 @@ def ofAverageVolume(self):
 
 
 parser = ArgumentParser(description = 'Get Realtime ticker from Yahoo-Finance')
-parser.add_argument("-t", "--ticker", dest="ticker", help="ticker for lookup", metavar="FILE")
+parser.add_argument("-t", "--ticker", required=True, dest="ticker", help="ticker for lookup", metavar="FILE")
+parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrom", default=False, action="store_true")
+
+
+#arser.add_argument("-v", "--volume", action="store_true", dest="volumeFlag", default=False, help="high volume notification")
+
 args = parser.parse_args()
 
 if args.ticker:
@@ -165,9 +174,7 @@ if args.ticker:
 	myOffHigh = offHigh(mystock)
 	myofflow = offlow(mystock)
 
-	
 	#Begin Report
-
 	newreport = Reporting(ticker)
 	newreport.print_timestamp()
 	newreport.print_realtimeprice()
