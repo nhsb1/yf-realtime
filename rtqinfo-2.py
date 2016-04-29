@@ -12,6 +12,8 @@ init(autoreset=True) #For colorama it autoresets color everytime it's called
 
 baseurl = 'http://finance.yahoo.com/q?s='
 endurl = '&ql=1'
+sp500index = Share('^GSPC') 
+sp500change = ""
 
 class Reporting(object): 
 	def __init__(self, ticker):
@@ -88,6 +90,17 @@ class Reporting(object):
 	def print_52week_offlow(self):
 		print "Percent off low: %s" %myofflow
 
+def indexprice():
+	global sp500Change, sp500Price
+	sp500Price = float(sp500index.get_price())
+	sp500Open = float(sp500index.get_open())
+	sp500Change = float(sp500index.get_change())
+	global sp500percentChange
+	sp500percentChange = ((sp500Change/sp500Open)*100)
+	return (sp500Price, sp500Open, sp500Change, sp500percentChange)
+
+def index_summary():
+	print "S&P 500, Price: %s, Change: %s, Percent Change: %s" %(sp500Price, sp500Change, str(round(sp500percentChange,2))+'%'), "\n" 
 
 def startup(self):
 	print "Runing against..." + url
@@ -179,6 +192,7 @@ parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output
 args = parser.parse_args()
 
 if args.ticker:
+	indexinfo = indexprice()
 	ticker = args.ticker
 	url = baseurl + ticker + endurl
 	startup(url)
@@ -200,6 +214,7 @@ if args.ticker:
 	if args.monochrome:
 		newreport = Reporting(ticker)
 		newreport.print_timestamp()
+		index_summary()
 		newreport.print_realtimeprice_mono()
 		newreport.print_delayprice()
 		newreport.print_percentchange_mono()
@@ -212,6 +227,7 @@ if args.ticker:
 	else:
 		newreport = Reporting(ticker)
 		newreport.print_timestamp()
+		index_summary()
 		newreport.print_realtimeprice()
 		newreport.print_delayprice()
 		newreport.print_percentchange()
