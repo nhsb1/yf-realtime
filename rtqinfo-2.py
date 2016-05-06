@@ -202,11 +202,25 @@ def ofAverageVolume(self):
 		ofAverageVolume = round((1-(myAverageVolume - myCurrentVolume)/(myAverageVolume))*100, 2)
 		return ofAverageVolume
 
+def supportResistance():
+	if args.resistance >= 0 or args.support >=0:
+			if realtime >= myresistance:
+				newreport.resistance_violation()
+				newreport.print_resistance()
+			if realtime <= mysupport:
+				newreport.support_violation()
+				newreport.print_support()
+
+def configFile():
+	if args.config:
+		print args.config
+
 parser = ArgumentParser(description = 'Get Realtime ticker from Yahoo-Finance')
 parser.add_argument("-t", "--ticker", required=True, dest="ticker", help="ticker for lookup", metavar="FILE")
 parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrome", default=False, action="store_true")
 parser.add_argument("-s", "--support", required=False, dest="support", help="Initialize S&P support level", metavar="support")
 parser.add_argument("-r", "--resistance", required=False, dest="resistance", help="Initialize S&P resistance level", metavar="resistance")
+parser.add_argument("-c", "--config", required=False, dest="config", help="specify a config file", metavar="resistance")
 
 #arser.add_argument("-v", "--volume", action="store_true", dest="volumeFlag", default=False, help="high volume notification")
 
@@ -263,13 +277,10 @@ if args.ticker:
 		newreport.print_52week_offhigh()
 		newreport.print_52weeklow()
 		newreport.print_52week_offlow()
-		if args.resistance >= 0 or args.support >=0:
-			if realtime >= myresistance:
-				newreport.resistance_violation()
-				newreport.print_resistance()
-			if realtime <= mysupport:
-				newreport.support_violation()
-				newreport.print_support()
-		#
-		#
+		supportResistance()
+		configFile()
+
+
+
+		
 
