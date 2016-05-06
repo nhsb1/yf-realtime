@@ -1,9 +1,12 @@
+#!/usr/bin/env python
 from bs4 import BeautifulSoup
 from yahoo_finance import Share
 import urllib2
 import time
 from argparse import ArgumentParser 
 from colorama import init, Fore, Back, Style
+
+#.8 - added support and resistance levels
 
 
 averagevolumeflag = 100 # the percentage volume to flag in output with 
@@ -14,6 +17,8 @@ baseurl = 'http://finance.yahoo.com/q?s='
 endurl = '&ql=1'
 sp500index = Share('^GSPC') 
 sp500change = ""
+myresistance = ""
+mysupport = ""
 
 class Reporting(object): 
 	def __init__(self, ticker):
@@ -89,6 +94,22 @@ class Reporting(object):
 
 	def print_52week_offlow(self):
 		print "Percent off low: %s" %myofflow
+
+	def print_support(self):
+		print "Support Level: %s" %mysupport
+
+	def print_resistance(self):
+		print "Resistance Level: %s" %myresistance
+
+	def resistance_violation(self):
+		global myresistance
+		myresistance = (Style.BRIGHT + Fore.GREEN + myresistance)
+
+	def support_violation(self):
+		global mysupport
+		mysupport = (Style.BRIGHT + Fore.RED + mysupport)
+
+
 
 def indexprice():
 	global sp500Change, sp500Price
@@ -181,11 +202,11 @@ def ofAverageVolume(self):
 		ofAverageVolume = round((1-(myAverageVolume - myCurrentVolume)/(myAverageVolume))*100, 2)
 		return ofAverageVolume
 
-
 parser = ArgumentParser(description = 'Get Realtime ticker from Yahoo-Finance')
 parser.add_argument("-t", "--ticker", required=True, dest="ticker", help="ticker for lookup", metavar="FILE")
 parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrome", default=False, action="store_true")
-
+parser.add_argument("-s", "--support", required=False, dest="support", help="Initialize S&P support level", metavar="support")
+parser.add_argument("-r", "--resistance", required=False, dest="resistance", help="Initialize S&P resistance level", metavar="resistance")
 
 #arser.add_argument("-v", "--volume", action="store_true", dest="volumeFlag", default=False, help="high volume notification")
 
@@ -209,6 +230,9 @@ if args.ticker:
 	myyearlow = getYearLow(mystock)
 	myOffHigh = offHigh(mystock)
 	myofflow = offlow(mystock)
+	mysupport = args.support
+	myresistance = args.resistance
+
 
 	#Begin Report
 	if args.monochrome:
@@ -224,6 +248,8 @@ if args.ticker:
 		newreport.print_52week_offhigh()
 		newreport.print_52weeklow()
 		newreport.print_52week_offlow()
+		newreport.print_support()
+		newreport.print_resistance()
 	else:
 		newreport = Reporting(ticker)
 		newreport.print_timestamp()
@@ -237,4 +263,13 @@ if args.ticker:
 		newreport.print_52week_offhigh()
 		newreport.print_52weeklow()
 		newreport.print_52week_offlow()
+		if args.resistance >= 0 or args.support >=0:
+			if myPrice >= myresistance:
+				newreport.resistance_violation()
+				newreport.print_resistance()
+			if myPrice <= mysupport:
+				newreport.support_violation()
+				newreport.print_support()
+		#
+		#
 
