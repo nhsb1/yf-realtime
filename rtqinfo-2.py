@@ -264,8 +264,6 @@ if args.ticker:
 		newreport.print_52weeklow()
 		newreport.print_52week_offlow()
 		if args.resistance >= 0 or args.support >=0:
-			print myPrice
-			print myresistance
 			if realtime >= myresistance:
 				newreport.resistance_violation()
 				newreport.print_resistance()
