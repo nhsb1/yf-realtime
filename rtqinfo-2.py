@@ -5,8 +5,10 @@ import urllib2
 import time
 from argparse import ArgumentParser 
 from colorama import init, Fore, Back, Style
+from ConfigParser import SafeConfigParser
 
 #.8 - added support and resistance levels
+#.14 - as support and resistance from config working with color; or -s -r working, not both (no error message), -b monochrome ebroken, 
 
 
 averagevolumeflag = 100 # the percentage volume to flag in output with 
@@ -203,7 +205,10 @@ def ofAverageVolume(self):
 		return ofAverageVolume
 
 def supportResistance():
-	if args.resistance >= 0 or args.support >=0:
+	global mysupport, myresistance
+	#print mysupport
+	#print myresistance
+	if args.resistance >= 0 or args.support >=0 or mysupport >=0 or myresistance >=0:
 			if realtime >= myresistance:
 				newreport.resistance_violation()
 				newreport.print_resistance()
@@ -212,12 +217,35 @@ def supportResistance():
 				newreport.print_support()
 
 def configFile():
+	global mysupport, myresistance
 	if args.config:
-		print args.config
+		ini = args.config
+		#print ini
+		parser = SafeConfigParser()
+		parser.read(ini)
+
+		for section in [ticker]:
+			#print '%-12s: %s' % (section, parser.has_section(section))
+			status = (parser.has_section(section))
+			#print status
+			if status is True: 
+				#print parser.get(ticker, 'support')
+				mysupport = parser.get(ticker, 'support')
+				#print mysupport
+				myresistance = parser.get(ticker, 'resistance')
+				#print myresistance
+				#print "Support: " + gasupport
+				#print "Resistance: " + garesistance
+			# else:
+			# 	print "Nope"
+
+
+		
+
 
 parser = ArgumentParser(description = 'Get Realtime ticker from Yahoo-Finance')
 parser.add_argument("-t", "--ticker", required=True, dest="ticker", help="ticker for lookup", metavar="FILE")
-parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrome", default=False, action="store_true")
+#parser.add_argument("-b","--monochrome", dest="monochrome", help="Display output in monochrome", default=False, action="store_true")
 parser.add_argument("-s", "--support", required=False, dest="support", help="Initialize S&P support level", metavar="support")
 parser.add_argument("-r", "--resistance", required=False, dest="resistance", help="Initialize S&P resistance level", metavar="resistance")
 parser.add_argument("-c", "--config", required=False, dest="config", help="specify a config file", metavar="resistance")
@@ -249,36 +277,40 @@ if args.ticker:
 
 
 	#Begin Report
-	if args.monochrome:
-		newreport = Reporting(ticker)
-		newreport.print_timestamp()
-		index_summary()
-		newreport.print_realtimeprice_mono()
-		newreport.print_delayprice()
-		newreport.print_percentchange_mono()
-		newreport.print_dailyvolume()
-		newreport.print_avgvolume_mono()
-		newreport.print_52weekhigh()
-		newreport.print_52week_offhigh()
-		newreport.print_52weeklow()
-		newreport.print_52week_offlow()
-		newreport.print_support()
-		newreport.print_resistance()
-	else:
-		newreport = Reporting(ticker)
-		newreport.print_timestamp()
-		index_summary()
-		newreport.print_realtimeprice()
-		newreport.print_delayprice()
-		newreport.print_percentchange()
-		newreport.print_dailyvolume()
-		newreport.print_avgvoulme()
-		newreport.print_52weekhigh()
-		newreport.print_52week_offhigh()
-		newreport.print_52weeklow()
-		newreport.print_52week_offlow()
-		supportResistance()
-		configFile()
+	# if args.monochrome:
+	# 	newreport = Reporting(ticker)
+	# 	newreport.print_timestamp()
+	# 	index_summary()
+	# 	newreport.print_realtimeprice_mono()
+	# 	newreport.print_delayprice()
+	# 	newreport.print_percentchange_mono()
+	# 	newreport.print_dailyvolume()
+	# 	newreport.print_avgvolume_mono()
+	# 	newreport.print_52weekhigh()
+	# 	newreport.print_52week_offhigh()
+	# 	newreport.print_52weeklow()
+	# 	newreport.print_52week_offlow()
+	# 	newreport.print_support()
+	# 	newreport.print_resistance()
+	#else:
+	newreport = Reporting(ticker)
+	newreport.print_timestamp()
+	index_summary()
+	newreport.print_realtimeprice()
+	newreport.print_delayprice()
+	newreport.print_percentchange()
+	newreport.print_dailyvolume()
+	newreport.print_avgvoulme()
+	newreport.print_52weekhigh()
+	newreport.print_52week_offhigh()
+	newreport.print_52weeklow()
+	newreport.print_52week_offlow()
+	configFile()
+	#print mysupport
+	#print myresistance
+	#newreport.print_support()
+	#newreport.print_resistance()
+	supportResistance()
 
 
 
