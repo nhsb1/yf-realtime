@@ -276,23 +276,6 @@ if args.ticker:
 	myresistance = args.resistance
 
 
-	#Begin Report
-	# if args.monochrome:
-	# 	newreport = Reporting(ticker)
-	# 	newreport.print_timestamp()
-	# 	index_summary()
-	# 	newreport.print_realtimeprice_mono()
-	# 	newreport.print_delayprice()
-	# 	newreport.print_percentchange_mono()
-	# 	newreport.print_dailyvolume()
-	# 	newreport.print_avgvolume_mono()
-	# 	newreport.print_52weekhigh()
-	# 	newreport.print_52week_offhigh()
-	# 	newreport.print_52weeklow()
-	# 	newreport.print_52week_offlow()
-	# 	newreport.print_support()
-	# 	newreport.print_resistance()
-	#else:
 	newreport = Reporting(ticker)
 	newreport.print_timestamp()
 	index_summary()
@@ -306,10 +289,6 @@ if args.ticker:
 	newreport.print_52weeklow()
 	newreport.print_52week_offlow()
 	configFile()
-	#print mysupport
-	#print myresistance
-	#newreport.print_support()
-	#newreport.print_resistance()
 	supportResistance()
 
 
